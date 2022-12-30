@@ -72,8 +72,8 @@ services:
     build: ./rasa_nlu
     container_name: rasa-nlu
     volumes:
-     - ./config.yml:/app/config.yml
-     - ./models/:/app/models/
+     - ./rasa_nlu/config.yml:/app/config.yml
+     - ./rasa_nlu/models/:/app/models/
     ports:
      - "8080:8080"
     networks:
