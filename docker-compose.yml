@@ -82,7 +82,7 @@ services:
    streamlit:
     restart: always
     container_name: streamlit-data
-    build: ./kb-editor
+    build: ./kb-editor/my_component
     ports:
      - "8501:8501"
     networks:
@@ -91,7 +91,7 @@ services:
    node:
     restart: always
     container_name: node-data
-    build: ./kb-editor/frontend
+    build: ./kb-editor/my_component/frontend
     ports:
      - "8051:8051"
     networks:
