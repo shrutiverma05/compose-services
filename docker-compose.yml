@@ -69,6 +69,7 @@ services:
       elasticsearch:
          condition: service_healthy
    nlu:
+    restart: always
     build: ./rasa_nlu
     container_name: rasa-nlu
     volumes:
