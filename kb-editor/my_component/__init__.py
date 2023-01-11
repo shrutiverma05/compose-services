@@ -234,9 +234,9 @@ if not _RELEASE:
                     row.append(str(i+1))
                     save.append(row)
             
-            HOSTNAME = os.environ['HOSTNAME']
-            USERNAME = os.environ['USERNAME']
-            PASSWORD = os.environ['PASSWORD']
+            HOSTNAME = "waws-prod-bay-153.ftp.azurewebsites.windows.net"
+            USERNAME = "novaCorpWeb\$novaCorpWeb"
+            PASSWORD = "B4sdhvCuwvH9XTCohRJhuQPf01n4xf0phPz2N1L0XlKY6sNWb0DkxxlTbpnu"
 
             # Connect FTP Server
             ftp_server = ftplib.FTP(HOSTNAME, USERNAME, PASSWORD)
@@ -267,7 +267,7 @@ if not _RELEASE:
             # Paging inputs
 
             page_columns = st.columns(2)
-            a_per_page = page_columns[1].slider('Answers per Page',1, 30,15, key='a_per_page')
+            a_per_page = page_columns[1].slider('Answers per Page',1, 30,10, key='a_per_page')
             last_page = ceil(st.session_state.num_questions/a_per_page)
             page = page_columns[0].selectbox('page',range(1,last_page+1))
 
@@ -351,7 +351,7 @@ if not _RELEASE:
                     if st.session_state.answer[i].find('/??/') == -1:
                         try:
                             ans=json.loads(st.session_state.answer[i])
-                            # num_clicks = my_component(botProperties,ans, key='Foo '+str(i+1)+' Answer')
+                            num_clicks = my_component(botProperties,ans, key='Foo '+str(i+1)+' Answer')
                             k = "editcard"
                             adata = json.dumps(ans)
                             if st.button("Edit", key = f"{i+1}.Edit"):
@@ -380,7 +380,7 @@ if not _RELEASE:
                         try:
                             for j in range(len(st.session_state[f"card_{i}"])):
                                 ans=json.loads(st.session_state[f"card_{i}"][j])
-                                # num_clicks = my_component(botProperties,ans, key='Foo '+str(i+1)+str(j+1)+' Answer')
+                                num_clicks = my_component(botProperties,ans, key='Foo '+str(i+1)+str(j+1)+' Answer')
                                 st.button("Edit", key = f"{i+1}.{j+1}.Edit", on_click=edit_card, args=[i,j,ans])
                                 st.button("Delete", key = f"{i+1}.{j+1}.Delete card", on_click=delete_card, args=[i,j])
                                 
