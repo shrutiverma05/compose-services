@@ -8,6 +8,6 @@ RUN pip install farm-haystack
 RUN pip install fastapi
 RUN pip install uvicorn
 #ENTRYPOINT : /bin/sh -c
-EXPOSE 8001
+EXPOSE 8033
 CMD ["python","./Haystack.py"]
 

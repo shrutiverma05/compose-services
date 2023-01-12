@@ -61,4 +61,4 @@ async def index(index_name):
 
 
 if __name__ == "__main__":
-    uvicorn.run("Haystack:app", host="uat.train.nlu.novacept.io",port=8033)
+    uvicorn.run("Haystack:app", host="0.0.0.0",port=8033)
