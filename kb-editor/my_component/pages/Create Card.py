@@ -1,8 +1,37 @@
 import streamlit as st
 import streamlit.components.v1 as components
-st.set_page_config(layout="wide")
+import base64
+
+st.set_page_config(layout="wide",page_title='Novacept Connect',page_icon = 'NovaceptMark.png',initial_sidebar_state = 'auto')
+
+# Add Designing from css file
+
 with open("designing.css") as source_des:
     st.markdown(f"<style>{source_des.read()}</style>",unsafe_allow_html=True)
+def add_bg_from_local(image_file):
+    with open(image_file, "rb") as image_file:
+        encoded_string = base64.b64encode(image_file.read())
+    st.markdown(
+    f"""
+    <style>
+    [data-testid="stSidebarNav"] {{
+        background-image: url(data:image/{"png"};base64,{encoded_string.decode()});
+        background-repeat: no-repeat;
+        background-position: 15px -40px;
+        background-size: 200px auto;
+    }}
+    [data-testid="stHeader"] {{
+        background-image: url(data:image/{"png"};base64,{encoded_string.decode()});
+        background-repeat: no-repeat;
+        background-position: 46px -66px;
+        background-size: 180px auto;
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True
+    )
+add_bg_from_local('novaceptlogo.png')
+
 for k, v in st.session_state.items():
     st.session_state[k] = v
 st.session_state.refresh = 1

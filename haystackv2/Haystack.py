@@ -38,7 +38,7 @@ def train(data_file,index_name,retriever,document_store):
 app = FastAPI()
 
 
-@app.get("/search/{index_name}")
+@app.get("/search/{index_name}", status_code=201)
 async def index(index_name):
     document_store = (ElasticsearchDocumentStore(
         host=host,
@@ -61,4 +61,4 @@ async def index(index_name):
 
 
 if __name__ == "__main__":
-    uvicorn.run("Haystack:app", host="0.0.0.0",port=8033)
+    uvicorn.run("Haystack:app", host="0.0.0.0", port=8001)

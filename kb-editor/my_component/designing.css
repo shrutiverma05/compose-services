@@ -85,12 +85,12 @@ button.css-9s5bis.edgvbvh3:focus{
     height: 3rem; 
 }
 
-[data-testid="stSidebarNav"] {
+/* [data-testid="stSidebarNav"] {
     background-image: url("https://i.postimg.cc/mcgHp2Mw/Novacept-Final-logo-01.png");
     background-repeat: no-repeat;
     padding-top: 14px;
     background-position: 17px -25px;
-}
+} */
 /* [data-testid="stSidebarNav"]::before {
     content: "Novacept";
     margin-left: 20px;
@@ -99,11 +99,11 @@ button.css-9s5bis.edgvbvh3:focus{
     position: relative;
     top: 100px;
 } */
-[data-testid="stHeader"] {
+/* [data-testid="stHeader"] {
     background-image: url("https://i.postimg.cc/mcgHp2Mw/Novacept-Final-logo-01.png");
     background-repeat: no-repeat;
     background-position: 57px -65px;
-}
+} */
 
 button.step-down.css-1r8izn3.e1jwn65y1:hover{
     background-color: var(--primary);
@@ -117,8 +117,12 @@ label.css-81oif8.effi0qh3{
     padding: 5px;
     border-radius: 5px;
 }
-
-
+[data-testid="stTickBar"] {
+    color: var(--white);
+}
+[data-testid="stMarkdownContainer"] {
+    color: var(--white);
+}
 @media (max-width: 612px) {
     [data-testid|="stSidebar"]{
         background-color: var(--primary);
