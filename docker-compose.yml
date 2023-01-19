@@ -44,7 +44,6 @@ services:
         timeout: 1s
         retries: 10
         start_period: 45s 
-     
 
    haystack:
      restart: on-failure
@@ -63,7 +62,6 @@ services:
       elasticsearch:
         condition: service_healthy
      
-     
    api:
      restart: on-failure
      container_name: "haystack_api"
@@ -80,7 +78,6 @@ services:
      depends_on:
       elasticsearch:
          condition: service_healthy
-     
    nlu:
     restart: on-failure
     build: ./rasa_nlu

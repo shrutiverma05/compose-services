@@ -104,20 +104,22 @@ if not _RELEASE:
     
     # Adding Images from local
 
-    def add_bg_from_local(image_file):
+    def add_bg_from_local(image_file, image_file2):
         with open(image_file, "rb") as image_file:
             encoded_string = base64.b64encode(image_file.read())
+        with open(image_file2, "rb") as image_file2:
+            encoded_string2 = base64.b64encode(image_file2.read())
         st.markdown(
         f"""
         <style>
         [data-testid="stSidebarNav"] {{
             background-image: url(data:image/{"png"};base64,{encoded_string.decode()});
             background-repeat: no-repeat;
-            background-position: 15px -40px;
+            background-position: 15px 47px;
             background-size: 200px auto;
         }}
         [data-testid="stHeader"] {{
-            background-image: url(data:image/{"png"};base64,{encoded_string.decode()});
+            background-image: url(data:image/{"png"};base64,{encoded_string2.decode()});
             background-repeat: no-repeat;
             background-position: 46px -66px;
             background-size: 180px auto;
@@ -126,7 +128,7 @@ if not _RELEASE:
         """,
         unsafe_allow_html=True
         )
-    add_bg_from_local('novaceptlogo.png')
+    add_bg_from_local('NovaceptcolorLogo.png','novaceptlogo.png')
 
     # Check Login Authentication
 
@@ -312,7 +314,7 @@ if not _RELEASE:
             page_columns = st.columns(2)
             a_per_page = page_columns[1].slider('Answers per Page',1, 30,10, key='a_per_page')
             last_page = ceil(st.session_state.num_questions/a_per_page)
-            page = page_columns[0].selectbox('Page',range(1,last_page+1))
+            
 
             # Train Button
             if st.button("Train", key = "Train"):
@@ -328,14 +330,23 @@ if not _RELEASE:
                 pass
 
             # Search questions
-                
-            st.text_input('Search', key='search')
-            if st.session_state.search != '':
-                sea = st.session_state.search
+            allques = []
+            for i in st.session_state.question:
+                for j in i:
+                    allques.append(j)
+            st.selectbox('Search', allques, key='search')
+            if 'sea' not in st.session_state:
+                st.session_state.sea = ''
+            if st.session_state.search != st.session_state.sea:
+                st.session_state.sea = st.session_state.search
+                sea = st.session_state.sea
                 for k in range(len(st.session_state.question)):
                     if sea in st.session_state.question[k]:
                         st.write(f'The Question is on page {ceil((k+1)/a_per_page)} QnA no {k+1} and question number {st.session_state.question[k].index(sea)+1}')
-
+                        url = f'http://localhost:8501/#{k+1}'
+                        st.markdown("check out this [link](%s)" % url)
+                        st.session_state.lol = ceil((k+1)/a_per_page)
+            page = page_columns[0].selectbox('Page',range(1,last_page+1), key='lol')
             # Compare current page selection to first and last page number
 
             if page == 1:
@@ -369,7 +380,7 @@ if not _RELEASE:
                     st.session_state.qindex.append(0)
 
                 con = st.container()
-                con.text(f'{i+1}.')
+                con.subheader(f'{i+1}.')
 
                 #Add Question to QnA
                 if con.button("Add Questions", key = f"{i}.Add Questions"):
@@ -379,7 +390,7 @@ if not _RELEASE:
                 
                 # Creating columns for All Questions and an Answer of current QnA
                 
-                col1, col2, col3= con.columns([3, 0.4, 3])
+                col1, col2, col3= con.columns([3, 0.6, 3])
                 col1.text("Questions")
                 col3.text("Answer")
 
