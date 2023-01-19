@@ -2,8 +2,7 @@ import uvicorn
 import os
 from haystack.document_stores import ElasticsearchDocumentStore
 from haystack.nodes import EmbeddingRetriever
-from haystack.pipelines import FAQPipeline
-from fastapi import FastAPI
+from fastapi import BackgroundTasks, FastAPI
 import pandas as pd
 import urllib.request
 
@@ -38,8 +37,8 @@ def train(data_file,index_name,retriever,document_store):
 app = FastAPI()
 
 
-@app.get("/search/{index_name}", status_code=201)
-async def index(index_name):
+@app.get("/search/{index_name}")
+async def index(index_name, background_tasks: BackgroundTasks):
     document_store = (ElasticsearchDocumentStore(
         host=host,
         username="",
@@ -56,8 +55,8 @@ async def index(index_name):
         use_gpu=True,
         scale_score=False,
     ))
-    train(data_file,index_name,retriever,document_store)
-    return f"Training complete for {index_name}"
+    background_tasks.add_task(train, data_file, index_name, retriever, document_store)
+    return f"Training started for {index_name}"
 
 
 if __name__ == "__main__":
