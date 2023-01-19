@@ -61,6 +61,7 @@ services:
      depends_on:
       elasticsearch:
         condition: service_healthy
+     tty: true
      
    api:
      restart: on-failure
