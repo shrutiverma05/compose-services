@@ -27,9 +27,13 @@ def train(data_file,index_name,retriever,document_store):
     questions = list(df["question"].values)
     print('before try')
     try:
+        print('before try1')
         df["question_emb"] = retriever.embed_queries(queries=questions).tolist()
+        print('try1')
     except:
+        print('before try2')
         df["question_emb"] = retriever.embed_queries(texts=questions)
+        print('try2')
     df = df.rename(columns={"question": "content"})
     print('after try')
 
