@@ -44,6 +44,7 @@ services:
         timeout: 1s
         retries: 10
         start_period: 45s 
+     tty: true
 
    haystack:
      restart: on-failure
@@ -79,6 +80,7 @@ services:
      depends_on:
       elasticsearch:
          condition: service_healthy
+     tty: true
    nlu:
     restart: on-failure
     build: ./rasa_nlu
