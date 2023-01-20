@@ -319,7 +319,7 @@ if not _RELEASE:
             # Train Button
             if st.button("Train", key = "Train"):
                 try:
-                    st.write('Training has begun')
+                    # st.write('Training has begun')
                     URL = f'{os.environ["TRAIN"]}/search/{st.session_state.login_id}'
                     r = requests.get(url = URL)
                     data = r.json()
@@ -343,8 +343,8 @@ if not _RELEASE:
                 for k in range(len(st.session_state.question)):
                     if sea in st.session_state.question[k]:
                         st.write(f'The Question is on page {ceil((k+1)/a_per_page)} QnA no {k+1} and question number {st.session_state.question[k].index(sea)+1}')
-                        url = f'http://localhost:8501/#{k+1}'
-                        st.markdown("check out this [link](%s)" % url)
+                        # url = f'http://localhost:8501/#{k+1}'
+                        # st.markdown("check out this [link](%s)" % url)
                         st.session_state.lol = ceil((k+1)/a_per_page)
             page = page_columns[0].selectbox('Page',range(1,last_page+1), key='lol')
             # Compare current page selection to first and last page number
