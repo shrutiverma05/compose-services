@@ -117,7 +117,7 @@ services:
    rocketchat:
     container_name: rocket-chat
     image: registry.rocket.chat/rocketchat/rocket.chat:${RELEASE:-latest}
-    build: ./rocket_chat
+    build: ./rocket_chat/5.4
     restart: on-failure
     labels:
       traefik.enable: "true"
@@ -125,6 +125,7 @@ services:
       traefik.http.routers.rocketchat.tls: "true"
       traefik.http.routers.rocketchat.entrypoints: https
       traefik.http.routers.rocketchat.tls.certresolver: le
+    
     environment:
       MONGO_URL: "${MONGO_URL:-\
         mongodb://${MONGODB_ADVERTISED_HOSTNAME:-mongodb}:${MONGODB_INITIAL_PRIMARY_PORT_NUMBER:-27017}/\
