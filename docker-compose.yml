@@ -117,7 +117,7 @@ services:
    rocketchat:
     container_name: rocket-chat
     image: registry.rocket.chat/rocketchat/rocket.chat:${RELEASE:-latest}
-    build: ./Docker.Official.Image
+    build: ./rocket_chat
     restart: on-failure
     labels:
       traefik.enable: "true"
@@ -148,7 +148,7 @@ services:
    mongodb:
     image: docker.io/bitnami/mongodb:${MONGODB_VERSION:-4.4}
     restart: on-failure
-    build: ./Docker.Official.Image
+    build: ./rocket_chat
     volumes:
       - mongodb_data:/bitnami/mongodb
     environment:
