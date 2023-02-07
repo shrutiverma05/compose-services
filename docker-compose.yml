@@ -44,8 +44,9 @@ services:
         timeout: 1s
         retries: 10
         start_period: 45s 
-     volumes: 
+     volumes:
       - esdata:/usr/share/elasticsearch/data
+
    haystack:
      restart: on-failure
      container_name: "haystack"
@@ -112,13 +113,10 @@ services:
     # volumes:
     #   - /app/frontend
     tty: true
-
-   
-
+     
 networks:
   test-network:
 volumes:
   https-portal-data:
   esdata:
     driver: local
-  
