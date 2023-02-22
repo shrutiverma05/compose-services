@@ -45,6 +45,10 @@ async def query(q):
 async def query(q):
     return pipe[2].run(query=q, params={"Retriever": {"top_k": 2}})
 
+@app.get('/query/'+index_names[3])
+async def query(q):
+    return pipe[3].run(query=q, params={"Retriever": {"top_k": 2}})
+
 # @app.get("/initialized")
 # def check_status():
 #     """
@@ -59,9 +63,7 @@ async def query(q):
 
 
 
-# @app.get('/query/'+index_names[3])
-# async def query(q):
-#     return pipe[3].run(query=q, params={"Retriever": {"top_k": 2}})
+
 
 # @app.get('/query/'+index_names[4])
 # async def query(q):
