@@ -5,7 +5,7 @@ from haystack.document_stores import ElasticsearchDocumentStore
 from haystack.nodes import EmbeddingRetriever
 from haystack.pipelines import FAQPipeline
 
-index_names = ['gts','propertyhub','valueleaf','recruitment']
+index_names = ['gts','propertyhub','valueleaf','recruitment','novacept']
 document_store = []
 retriever = []
 pipe = []
@@ -49,6 +49,10 @@ async def query(q):
 async def query(q):
     return pipe[3].run(query=q, params={"Retriever": {"top_k": 2}})
 
+@app.get('/query/'+index_names[4])
+async def query(q):
+    return pipe[4].run(query=q, params={"Retriever": {"top_k": 2}})
+
 # @app.get("/initialized")
 # def check_status():
 #     """
@@ -65,6 +69,3 @@ async def query(q):
 
 
 
-# @app.get('/query/'+index_names[4])
-# async def query(q):
-#     return pipe[4].run(query=q, params={"Retriever": {"top_k": 2}})
