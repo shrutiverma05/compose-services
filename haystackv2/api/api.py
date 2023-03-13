@@ -4,13 +4,23 @@ import os
 from haystack.document_stores import ElasticsearchDocumentStore
 from haystack.nodes import EmbeddingRetriever
 from haystack.pipelines import FAQPipeline
+from fastapi.middleware.cors import CORSMiddleware
 
 index_names = ['gts','propertyhub','valueleaf','recruitment','novacept']
 document_store = []
 retriever = []
 pipe = []
 host = os.environ.get("ELASTICSEARCH_HOST", "localhost")
+# app = FastAPI()
 app = FastAPI()
+origins = ["*"]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    )
 
 for i in range(len(index_names)):
     document_store.append(ElasticsearchDocumentStore(
