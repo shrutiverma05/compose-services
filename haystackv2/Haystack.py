@@ -17,7 +17,10 @@ def download(data_file,index_name):
     
 def train(data_file,index_name,retriever,document_store):
     download(data_file,index_name)
-    df = pd.read_csv(data_file, encoding='cp1252')
+    try:
+        df = pd.read_csv(data_file, encoding='cp1252')
+    except:
+        df = pd.read_csv(data_file)
     df.fillna(value="", inplace=True)
     df["question"] = df["question"].apply(lambda x: x.strip())
 
