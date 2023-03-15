@@ -6,7 +6,7 @@ from haystack.nodes import EmbeddingRetriever
 from haystack.pipelines import FAQPipeline
 from fastapi.middleware.cors import CORSMiddleware
 
-index_names = ['gts','propertyhub','valueleaf','recruitment','novacept']
+index_names = ['gts','propertyhub','valueleaf','recruitment','novacept','haytest']
 document_store = []
 retriever = []
 pipe = []
@@ -62,6 +62,10 @@ async def query(q):
 @app.get('/query/'+index_names[4])
 async def query(q):
     return pipe[4].run(query=q, params={"Retriever": {"top_k": 2}})
+
+@app.get('/query/'+index_names[4])
+async def query(q):
+    return pipe[5].run(query=q, params={"Retriever": {"top_k": 2}})
 
 # @app.get("/initialized")
 # def check_status():

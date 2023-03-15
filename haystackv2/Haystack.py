@@ -5,6 +5,7 @@ from haystack.nodes import EmbeddingRetriever
 from fastapi import BackgroundTasks, FastAPI
 import pandas as pd
 import urllib.request
+from fastapi.middleware.cors import CORSMiddleware
 
 data_file = 'faq_data.csv'
 host = os.environ.get("ELASTICSEARCH_HOST", "localhost")
@@ -35,7 +36,14 @@ def train(data_file,index_name,retriever,document_store):
     document_store.write_documents(docs_to_index)
 
 app = FastAPI()
-
+origins = ["*"]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    )
 
 @app.get("/train/{index_name}", status_code=202)
 async def index(index_name, background_tasks: BackgroundTasks):
