@@ -18,16 +18,16 @@ def download(data_file,index_name):
     urllib.request.urlretrieve(url, data_file)
 
 def train(data_file,index_name,retriever,document_store):
-    url = "http://localhost:9200/"+index_name
-    payload={}
-    headers = {}
-    response = requests.request("GET", url, headers=headers, data=payload)
-    if "error" not in json.loads(response.text):
-         # Delete Index        
-        url = "http://localhost:9200/"+index_name
-        payload={}
-        headers = {}
-        response = requests.request("DELETE", url, headers=headers, data=payload)
+    # url = "http://localhost:9200/"+index_name
+    # payload={}
+    # headers = {}
+    # response = requests.request("GET", url, headers=headers, data=payload)
+    # if "error" not in json.loads(response.text):
+    #      # Delete Index        
+    #     url = "http://localhost:9200/"+index_name
+    #     payload={}
+    #     headers = {}
+    #     response = requests.request("DELETE", url, headers=headers, data=payload)
     download(data_file,index_name)
     try:
         df = pd.read_csv(data_file, encoding='cp1252')
