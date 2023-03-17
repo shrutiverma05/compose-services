@@ -289,10 +289,16 @@ if not _RELEASE:
             data_file = 'faq_data.csv'
             url = f'{os.environ["FTPurl"]}{st.session_state["login_id"]}/{data_file}'
             urllib.request.urlretrieve(url, data_file)
-            with open(data_file, mode ='r',encoding='cp1252') as file:
-                csvFile = csv.reader(file)
-                for lines in csvFile:
-                    indata.append(lines)
+            try:
+                with open(data_file, mode ='r',encoding='cp1252') as file:
+                    csvFile = csv.reader(file)
+                    for lines in csvFile:
+                        indata.append(lines)
+            except:
+                with open(data_file, mode ='r') as file:
+                    csvFile = csv.reader(file)
+                    for lines in csvFile:
+                        indata.append(lines)
             indata.pop(0)
             question = []
             ans = []

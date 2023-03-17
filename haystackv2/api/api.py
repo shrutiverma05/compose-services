@@ -63,7 +63,7 @@ async def query(q):
 async def query(q):
     return pipe[4].run(query=q, params={"Retriever": {"top_k": 2}})
 
-@app.get('/query/'+index_names[4])
+@app.get('/query/'+index_names[5])
 async def query(q):
     return pipe[5].run(query=q, params={"Retriever": {"top_k": 2}})
 
