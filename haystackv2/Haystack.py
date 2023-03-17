@@ -6,6 +6,8 @@ from fastapi import BackgroundTasks, FastAPI
 import pandas as pd
 import urllib.request
 from fastapi.middleware.cors import CORSMiddleware
+import requests
+import json
 
 data_file = 'faq_data.csv'
 host = os.environ.get("ELASTICSEARCH_HOST", "localhost")
@@ -14,8 +16,18 @@ hostedserverUrl = "https://novacorpweb.azurewebsites.net/"
 def download(data_file,index_name):
     url = hostedserverUrl+index_name+'/'+data_file
     urllib.request.urlretrieve(url, data_file)
-    
+
 def train(data_file,index_name,retriever,document_store):
+    url = "http://localhost:9200/"+index_name
+    payload={}
+    headers = {}
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if "error" not in json.loads(response.text):
+         # Delete Index        
+        url = "http://localhost:9200/"+index_name
+        payload={}
+        headers = {}
+        response = requests.request("DELETE", url, headers=headers, data=payload)
     download(data_file,index_name)
     try:
         df = pd.read_csv(data_file, encoding='cp1252')
