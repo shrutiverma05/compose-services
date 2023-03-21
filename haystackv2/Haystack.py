@@ -10,7 +10,7 @@ import requests
 import json
 
 data_file = 'faq_data.csv'
-host = os.environ.get("ELASTICSEARCH_HOST", "uat.es.novacept.io")
+host = os.environ.get("ELASTICSEARCH_HOST", "localhost")
 hostedserverUrl = "https://novacorpweb.azurewebsites.net/"
 
 def download(data_file,index_name):
@@ -18,16 +18,16 @@ def download(data_file,index_name):
     urllib.request.urlretrieve(url, data_file)
 
 def train(data_file,index_name,retriever,document_store):
-    url = "https://uat.es.novacept.io/"+index_name
-    payload={}
-    headers = {}
-    response = requests.request("GET", url, headers=headers, data=payload)
-    if "error" not in json.loads(response.text):
-         # Delete Index        
-        url = "https://uat.es.novacept.io/"+index_name
-        payload={}
-        headers = {}
-        response = requests.request("DELETE", url, headers=headers, data=payload)
+    # url = "http://localhost:9200/"+index_name
+    # payload={}
+    # headers = {}
+    # response = requests.request("GET", url, headers=headers, data=payload)
+    # if "error" not in json.loads(response.text):
+    #      # Delete Index        
+    #     url = "http://localhost:9200/"+index_name
+    #     payload={}
+    #     headers = {}
+    #     response = requests.request("DELETE", url, headers=headers, data=payload)
     download(data_file,index_name)
     try:
         df = pd.read_csv(data_file, encoding='cp1252')

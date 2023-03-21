@@ -60,9 +60,9 @@ services:
     #    - ELASTICSEARCH_HOST=elasticsearch
      env_file:
       - .env.haystack
-    #  depends_on:
-    #   elasticsearch:
-    #     condition: service_healthy
+     depends_on:
+      elasticsearch:
+        condition: service_healthy
      
    api:
      restart: on-failure
@@ -77,9 +77,9 @@ services:
     #    - ELASTICSEARCH_HOST=elasticsearch
      env_file:
       - .env.haystack
-    #  depends_on:
-    #   elasticsearch:
-    #      condition: service_healthy
+     depends_on:
+      elasticsearch:
+         condition: service_healthy
    nlu:
     restart: on-failure
     build: ./rasa_nlu
