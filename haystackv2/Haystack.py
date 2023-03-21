@@ -10,7 +10,7 @@ import requests
 import json
 
 data_file = 'faq_data.csv'
-host = os.environ.get("ELASTICSEARCH_HOST", "localhost")
+host = os.environ.get("ELASTICSEARCH_HOST", "uat.es.novacept.io")
 hostedserverUrl = "https://novacorpweb.azurewebsites.net/"
 
 def download(data_file,index_name):
