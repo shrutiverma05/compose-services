@@ -5,81 +5,53 @@ from haystack.document_stores import ElasticsearchDocumentStore
 from haystack.nodes import EmbeddingRetriever
 from haystack.pipelines import FAQPipeline
 from fastapi.middleware.cors import CORSMiddleware
+import ftplib
 
-index_names = ['gts','propertyhub','valueleaf','recruitment','novacept','haytest']
-document_store = []
-retriever = []
-pipe = []
+HOSTNAME = "waws-prod-bay-153.ftp.azurewebsites.windows.net"
+USERNAME = "novaCorpWeb\$novaCorpWeb"
+PASSWORD = "B4sdhvCuwvH9XTCohRJhuQPf01n4xf0phPz2N1L0XlKY6sNWb0DkxxlTbpnu"
+# HOSTNAME = "waws-prod-db3-177.ftp.azurewebsites.windows.net"
+# USERNAME = "novaeu\$novaeu"
+# PASSWORD = "r8d0hfMcM1ssZ0K4jspHbQ1zwdqjH29PvMnMzFugnpyrfZ1kZfG6Yc9kJbi7"
+
+ftp_server = ftplib.FTP(HOSTNAME, USERNAME, PASSWORD)
+ftp_server.encoding = "utf-8"
+ftp_server.cwd('/site/wwwroot')
+
+index_names = []
+ftp_server.retrlines('LIST', lambda x: index_names.append(x.split()[-1]))
+# index_names = ['gts','propertyhub','valueleaf','recruitment','novacept','haytest']
+
 host = os.environ.get("ELASTICSEARCH_HOST", "localhost")
-# app = FastAPI()
 app = FastAPI()
+
 origins = ["*"]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-    )
+)
 
-for i in range(len(index_names)):
-    document_store.append(ElasticsearchDocumentStore(
+@app.get("/query/{index_name}/")
+async def query(q,index_name):
+    document_store = (ElasticsearchDocumentStore(
         host=host,
         username="",
         password="",
-        index=index_names[i],
+        index=index_name,
         embedding_field="question_emb",
         embedding_dim=384,
         excluded_meta_data=["question_emb"],
         similarity="cosine",
     ))
-
-    retriever.append(EmbeddingRetriever(
-        document_store=document_store[i],
+    retriever = (EmbeddingRetriever(
+        document_store=document_store,
         embedding_model="sentence-transformers/all-MiniLM-L6-v2",
         use_gpu=True,
         scale_score=False,
     ))
-
-    pipe.append(FAQPipeline(retriever=retriever[i]))
-
-@app.get('/query/'+index_names[0])
-async def query(q):
-    return pipe[0].run(query=q, params={"Retriever": {"top_k": 2}})
-
-@app.get('/query/'+index_names[1])
-async def query(q):
-    return pipe[1].run(query=q, params={"Retriever": {"top_k": 2}})
-
-@app.get('/query/'+index_names[2])
-async def query(q):
-    return pipe[2].run(query=q, params={"Retriever": {"top_k": 2}})
-
-@app.get('/query/'+index_names[3])
-async def query(q):
-    return pipe[3].run(query=q, params={"Retriever": {"top_k": 2}})
-
-@app.get('/query/'+index_names[4])
-async def query(q):
-    return pipe[4].run(query=q, params={"Retriever": {"top_k": 2}})
-
-@app.get('/query/'+index_names[5])
-async def query(q):
-    return pipe[5].run(query=q, params={"Retriever": {"top_k": 2}})
-
-# @app.get("/initialized")
-# def check_status():
-#     """
-#     This endpoint can be used during startup to understand if the
-#     server is ready to take any requests, or is still loading.
-
-#     The recommended approach is to call this endpoint with a short timeout, 
-#     like 500ms, and in case of no reply, consider the server busy.
-#     """
-#     return True    
-
-
-
-
-
-
+    pipe = (FAQPipeline(retriever=retriever))
+    return pipe.run(query=q, params={"Retriever": {"top_k": 2}})
