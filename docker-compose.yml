@@ -39,7 +39,7 @@ services:
      env_file:
       - .env.elasticsearch
      healthcheck:
-        test: curl --fail http://localhost:9200/_cat/health || exit 1
+        test: curl --fail https://uat.es.novacept.io/_cat/health || exit 1
         interval: 10s
         timeout: 1s
         retries: 10
@@ -60,9 +60,9 @@ services:
     #    - ELASTICSEARCH_HOST=elasticsearch
      env_file:
       - .env.haystack
-     depends_on:
-      elasticsearch:
-        condition: service_healthy
+    #  depends_on:
+    #   elasticsearch:
+    #     condition: service_healthy
      
    api:
      restart: on-failure
@@ -77,9 +77,9 @@ services:
     #    - ELASTICSEARCH_HOST=elasticsearch
      env_file:
       - .env.haystack
-     depends_on:
-      elasticsearch:
-         condition: service_healthy
+    #  depends_on:
+    #   elasticsearch:
+    #      condition: service_healthy
    nlu:
     restart: on-failure
     build: ./rasa_nlu
