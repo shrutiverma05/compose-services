@@ -80,6 +80,7 @@ services:
      depends_on:
       elasticsearch:
          condition: service_healthy
+        
    nlu:
     restart: on-failure
     build: ./rasa_nlu

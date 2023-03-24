@@ -35,7 +35,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/query/{index_name}/")
+@app.get("/query/{index_name}")
 async def query(q,index_name):
     document_store = (ElasticsearchDocumentStore(
         host=host,
