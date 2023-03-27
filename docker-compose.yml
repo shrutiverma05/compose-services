@@ -132,7 +132,7 @@ services:
     container_name: frontend-data
     build: ./QnA Editor React/frontend
     ports:
-     - "3000:3000"
+     - "8005:8005"
     networks:
      - test-network
     command: ["npm", "start"]
