@@ -10,8 +10,8 @@ services:
       - haystack
       - api
       - nlu
-      - streamlit
-      - node
+      # - streamlit
+      # - node
     restart: on-failure
     # environment:
     #   DOMAINS: 'uat.ml.novacept.io -> http://api:8000 , uat.nlu.ml.novacept.io -> http://nlu:8080 , uat.kb.novacept.io -> http://streamlit:8501 , uat.kb.node.novacept.io -> http://node:8051'
@@ -93,31 +93,59 @@ services:
     networks:
      - test-network
 
-   streamlit:
-    restart: on-failure
-    container_name: streamlit-data
-    build: ./kb-editor/my_component
-    ports:
-     - "8501:8501"
-    networks:
-     - test-network
+  #  streamlit:
+  #   restart: on-failure
+  #   container_name: streamlit-data
+  #   build: ./kb-editor/my_component
+  #   ports:
+  #    - "8501:8501"
+  #   networks:
+  #    - test-network
 
+  #  node:
+  #   restart: on-failure
+  #   container_name: node-data
+  #   build: ./kb-editor/my_component/frontend
+  #   ports:
+  #    - "8051:8051"
+  #   networks:
+  #    - test-network
+  #   command: ["npm", "start"]
+  #   # volumes:
+  #   #   - /app/frontend
+  #   tty: true
+   server:
+    restart: on-failure
+    container_name: backend-data
+    build: ./backend
+    ports:
+      - "8085:8085"
+    networks:
+      - test-network
+    command: ["node", "index.js"]
+    volumes:
+      - data1:/app/backend/
+    tty: true
+     
    node:
     restart: on-failure
-    container_name: node-data
-    build: ./kb-editor/my_component/frontend
+    container_name: frontend-data
+    build: ./frontend
     ports:
-     - "8051:8051"
+     - "3000:3000"
     networks:
      - test-network
     command: ["npm", "start"]
-    # volumes:
-    #   - /app/frontend
+    volumes:
+       - data2:/app/frontend
     tty: true
+    
      
 networks:
   test-network:
 volumes:
-  https-portal-data:
+  https-portal-data: 
   esdata:
     driver: local
+  data1: 
+  data2:
