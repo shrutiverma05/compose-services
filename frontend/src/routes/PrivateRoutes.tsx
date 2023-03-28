@@ -8,6 +8,7 @@ const PrivateRoute = (props: any) => {
   const navigate = useNavigate();
   let { user, botProp } = useContext(AuthContext);
   useEffect(() => {
+    user ? console.log(true) : navigate("/");
     if (!user && !botProp) {
       navigate("/");
     }

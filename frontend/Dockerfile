@@ -5,6 +5,6 @@ COPY . /app
 WORKDIR /app/frontend
 
 RUN npm i --force
-EXPOSE 8005
+EXPOSE 8009
 
 CMD ["npm", "start"]

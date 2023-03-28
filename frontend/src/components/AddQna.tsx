@@ -35,6 +35,7 @@ function AddQna() {
   const [error, setError] = useState(false);
   let data: any = [];
   const [loading, setLoading] = useState(true);
+  // CHECK WHETHER THERE MIGHT BE ANSWER OR QUESTION IN THE SESSION STORAGE
   const [fields, setFields] = useState<any>(() =>
     sessionStorage.getItem("questions")
       ? JSON.parse(sessionStorage.getItem("questions") as string)
@@ -51,10 +52,12 @@ function AddQna() {
       : ""
   );
   let answer = "";
-  // let adaptiveAnswer = JSON.stringify(card);
   const index = sessionStorage.getItem("index")
     ? parseInt(sessionStorage.getItem("index") as string) + 1
     : 0;
+
+  // HANDLES ERROR SNACKBAR
+
   const handleErrorClose = (
     event?: React.SyntheticEvent | Event,
     reason?: string
@@ -65,12 +68,13 @@ function AddQna() {
 
     setErrorOpen(false);
   };
-
+  //  HANDLES CHANGE
   function handleChange(i: any, event: any) {
     const values = [...fields];
     values[i].value = event.target.value;
     setFields(values);
   }
+
   const handleSelect = (value: any) => {
     setSelectedValue(value);
   };
@@ -85,17 +89,19 @@ function AddQna() {
     values.splice(i, 1);
     setFields(values);
   }
+  // adds carousel
   function carouselAdd() {
     const values = [...carousel];
     values.push({ value: JSON.stringify(card) });
     setCarousel(values);
   }
-
+  // removes the carousel
   function carouselRemove(i: any) {
     const values = [...carousel];
     values.splice(i, 1);
     setCarousel(values);
   }
+  // adaptive card config
   var hostConfig = {
     hostCapabilities: {},
     choiceSetInputValueSeparator: ",",
@@ -263,9 +269,7 @@ function AddQna() {
     },
   };
 
-  const handleAdaptiveAnswer = (value: string) => {
-    return value;
-  };
+  // handles carousel answer converts into string format
   const handleCarouselAnswer = () => {
     let a = [];
     let b: string = "";
@@ -275,6 +279,7 @@ function AddQna() {
     }
     return b;
   };
+  // Handles Answer checks whether its
   function handleAnswer() {
     if (selectedValue === "option1") {
       answer = adaptiveAnswer;
@@ -295,7 +300,7 @@ function AddQna() {
     }
     if (!error) {
       // console.log(error);
-      if (answer != "") {
+      if (answer !== "") {
         for (let i = 0; i < fields.length; i++) {
           let header = {
             index: index,

@@ -13,6 +13,7 @@ function Update() {
   let { user } = useContext(AuthContext);
   const id = parseInt(params.id as string);
 
+  // ADDS QUESTION
   function addQuestion() {
     const values = [...data];
     // console.log(data[0].answer);
@@ -20,10 +21,12 @@ function Update() {
     setData(values);
     // handleData(data);
   }
-
+  // REMOVES DUPLICATES FROM AN ARRAY
   function removeDuplicates(dataArray: any) {
     return [...new Set(dataArray)];
   }
+
+  // HANDLES THE DATA
   function handleData(data: any) {
     let index: any = [];
     let answer: any = [];
@@ -46,6 +49,7 @@ function Update() {
       } else {
         answer.push(d.answer);
       }
+      return <></>;
     });
     const finalIndex = removeDuplicates(index);
     const finalAnswer: any = removeDuplicates(answer);
@@ -84,6 +88,8 @@ function Update() {
       </div>
     );
   }
+
+  //CALLS THE UPLOAD API
   function modifyUpload(data: any, id: number) {
     sessionStorage.removeItem("changedcard");
     sessionStorage.removeItem("index");
@@ -92,6 +98,7 @@ function Update() {
       if (d.question) {
         newData.push(d);
       }
+      return null;
     });
     // console.log(dab);
     axios
@@ -274,15 +281,21 @@ function Update() {
       },
     },
   };
+  //REMOVE ANSWER
   function handleRemove(i: any) {
     const values = [...data];
     values.splice(i, 1);
     setData(values);
   }
 
+  // HANDLES ANSWER
+
   function handleAnswer(answer: string) {
+    // TRY CATCH BLOCK TO AVOID JSON ERROR
     try {
+      //  CHECKS WHETHER ITS ADAPTIVE CARD
       if (answer.includes("AdaptiveCard")) {
+        // CHECKS WHETHER ITS CAROUSEL ON THE BASIS
         if (answer.includes("/??/")) {
           const carousel = answer.split("/??/");
           return (
@@ -344,6 +357,7 @@ function Update() {
               onChange={(event) => {
                 data.map((item: any) => {
                   item.answer = event.target.value;
+                  return null;
                 });
               }}
             ></textarea>
@@ -354,6 +368,8 @@ function Update() {
       return <span>Wrong JSON</span>;
     }
   }
+
+  // Handles Question
   function handleQuestion(dat: any) {
     let questions: any = [];
     return (
@@ -390,6 +406,8 @@ function Update() {
     );
   }
 
+  // To fetch the data
+
   useEffect(() => {
     axios
       .post(`${process.env.REACT_APP_API_URL}/update`, {
@@ -405,7 +423,9 @@ function Update() {
         }
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [user, id]);
+
+  // To avoid undefined error at run time
 
   if (loading) {
     return (
@@ -419,7 +439,7 @@ function Update() {
       <>
         <Header />
         <div className="container-fluid" style={{ marginTop: "5%" }}>
-          <div style={{ overflow: "auto", height: "700px", zIndex: "88888" }}>
+          <div style={{ overflow: "auto", height: "550px", zIndex: "88888" }}>
             {handleData(data)}
           </div>
           <div className="d-flex justify-content-center">

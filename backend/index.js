@@ -41,12 +41,12 @@ const valid = {
     valid: "valid"
 }
 
-
+// Remove duplicates from array
 function removeDuplicates(dataArray) {
     return [...new Set(dataArray)];
 }
 
-
+//  create csv to json
 async function convertCsvToJson(path, startIndex, endIndex, res) {
     try {
         const empty = (arr) => arr.length = 0;
@@ -80,7 +80,7 @@ async function convertCsvToJson(path, startIndex, endIndex, res) {
         error = true
     }
 }
-// Funtion to download data and bot prop
+// Funtion to Download Data 
 async function get(userID, pass, res) {
     const client = new ftp.Client()
     client.ftp.verbose = true;
@@ -116,6 +116,7 @@ async function get(userID, pass, res) {
     client.close()
 
 };
+
 async function upload(userID, res) {
     const client = new ftp.Client()
     client.ftp.verbose = true;
@@ -291,7 +292,7 @@ async function searchValue(path, value, res) {
     }
 }
 
-
+// End point for search 
 app.post("/search", function (req, res) {
     userID = req.body.userID;
     value = req.body.value;
@@ -316,6 +317,7 @@ app.post("/login", function (req, res) {
     }
 
 })
+// End point for add
 app.post("/add", function (req, res) {
     userID = req.body.userID;
     data = req.body.data;
@@ -329,7 +331,7 @@ app.post("/add", function (req, res) {
     }
 
 })
-
+// end point for modifying the file
 app.post("/modify", function (req, res) {
     userID = req.body.userID;
     data = req.body.data;
@@ -345,6 +347,7 @@ app.post("/modify", function (req, res) {
     }
 
 })
+// end point for delete
 app.post("/delete", function (req, res) {
     id = req.body.id;
     userID = req.body.userID;
@@ -360,7 +363,7 @@ app.post("/delete", function (req, res) {
         res.status(404).send(invalid)
     }
 })
-
+//  end point to get data in paginated form
 app.post("/data", function (req, res) {
     pageNumber = req.body.pageNumber;
     limit = req.body.limit;
@@ -383,6 +386,7 @@ app.post("/data", function (req, res) {
     }
 
 })
+//end point for upload the data back in the server
 app.post("/upload", function (req, res) {
     userID = req.body.userID;
     if (userID) {
@@ -393,6 +397,7 @@ app.post("/upload", function (req, res) {
 
     }
 })
+// end point to send single data
 app.post("/update", function (req, res) {
     id = req.body.id;
     userID = req.body.userID;

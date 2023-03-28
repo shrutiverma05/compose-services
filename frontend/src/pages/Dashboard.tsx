@@ -1,21 +1,22 @@
 import Header from "../fragments/Header";
-import { useState, useContext } from "react";
+import * as React from "react";
 import axios from "axios";
+import { useEffect, useContext, useState } from "react";
 import AuthContext from "../context/AuthContext";
+import ReactPaginate from "react-paginate";
 import { AdaptiveCard } from "adaptivecards-react";
-import Carousel from "react-material-ui-carousel";
+import { Link } from "react-router-dom";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert, { AlertProps } from "@mui/material/Alert";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Link, useNavigate } from "react-router-dom";
-import EditIcon from "@mui/icons-material/Edit";
-import Snackbar from "@mui/material/Snackbar";
-import MuiAlert, { AlertProps } from "@mui/material/Alert";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import Carousel from "react-material-ui-carousel";
 import Swal from "sweetalert2";
-import * as React from "react";
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -24,13 +25,49 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-function SearchQna() {
-  const [data, setData] = useState<any>([]);
-  const [searchValue, setSearchValue] = useState("");
-  const [loading, setLoading] = useState(true);
+function Dashboard() {
   let { user } = useContext(AuthContext);
+  const [open, setOpen] = React.useState(false);
+  const [updateOpen, setUpdateOpen] = React.useState(false);
 
   const [errorOpen, setErrorOpen] = React.useState(false);
+
+  const [data, setData] = useState(() =>
+    sessionStorage.getItem("data")
+      ? JSON.parse(sessionStorage.getItem("data") as string)
+      : []
+  );
+  const [count, setCount] = useState(() =>
+    data.totalCount ? data.totalCount : 0
+  );
+  const [loading, setloading] = useState(true);
+  const totalPage = Math.ceil(count / 10);
+  let id = sessionStorage.getItem("pageNumber")
+    ? parseInt(sessionStorage.getItem("pageNumber") as string)
+    : 1;
+
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  const handleUpdateClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setUpdateOpen(false);
+  };
+
   const handleErrorClose = (
     event?: React.SyntheticEvent | Event,
     reason?: string
@@ -41,32 +78,31 @@ function SearchQna() {
 
     setErrorOpen(false);
   };
-
-  const navigate = useNavigate();
-  function searchQna(value: string, userID: string) {
+  function getData(userID: string, pageNumber: number, limit: number) {
     axios
-      .post(`${process.env.REACT_APP_API_URL}/search`, {
+      .post(`${process.env.REACT_APP_API_URL}/data`, {
         userID: userID,
-        value: value,
+        pageNumber: pageNumber,
+        limit: limit,
       })
       .then((res) => {
-        if (res.status === 200) {
+        if (res.status) {
           setData(res.data);
-          setLoading(false);
+          if (res.data.totalCount) {
+            setCount(res.data.totalCount);
+          }
+          if (res.data.lastIndex) {
+            sessionStorage.setItem("index", res.data.lastIndex);
+          }
+          // console.log(data.totalCount);
+          setloading(false);
         }
       })
       .catch((err) => {
-        setLoading(false);
-        // alert("Sorry Something Went Wrong");
-        setErrorOpen(true);
         console.log(err);
       });
   }
-  function removeDuplicates(dataArray: any) {
-    return [...new Set(dataArray)];
-  }
-
-  function del(id: number, userID: string) {
+  function del(id: number, userID: string, pageNum: number) {
     Swal.fire({
       title: "Are you sure?",
       text: "This operation cannot be undone.",
@@ -85,84 +121,93 @@ function SearchQna() {
           })
           .then((res) => {
             if (res.status === 200) {
-              sessionStorage.setItem("delete", "true");
-              navigate("/dashboard");
+              // alert("Deleted Successully");
+              getData(user, pageNum, 10);
+              setErrorOpen(true);
             }
           })
           .catch((err) => {
-            setErrorOpen(true);
             console.log(err);
           });
       }
     });
   }
-
+  function removeDuplicates(dataArray: any) {
+    return [...new Set(dataArray)];
+  }
+  // Handles data
   function handleData(data: any) {
     let index: any = [];
     let question: any = [];
     let answer: any = [];
-    data.data.map((d: any) => {
+    data.result.map((d: any) => {
       index.push(d.index);
       question.push(d.question);
       answer.push(d.answer);
+      return <></>;
     });
     const finalIndex = removeDuplicates(index);
     const finalAnswer: any = removeDuplicates(answer);
-    if (finalIndex.length === 0) {
-      return <h2 className="text text-center mt-2">No results found!</h2>;
-    } else {
-      return (
-        <table className="table table-bordered table-hover ">
-          <thead
-            className="thead-dark"
-            style={{ position: "sticky", top: "0", zIndex: "88888" }}
-          >
-            <tr>
-              <th scope="col" style={{ width: "5%" }}>
-                #
-              </th>
-              <th scope="col" style={{ width: "20%" }}>
-                Questions
-              </th>
-              <th scope="col" style={{ width: "55%" }}>
-                Answers
-              </th>
-              <th scope="col" style={{ width: "20%" }}>
-                Operations
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {finalIndex.map((q: any, key: number) => (
-              <tr key={key}>
-                <td>{key + 1}</td>
-                <td>
-                  <>{handleQuestion(data, parseInt(q))}</>
-                </td>
-                <td>{handleAnswer(finalAnswer[key])}</td>
-                <td>
-                  <div className="d-flex ">
-                    <Link to={"/update/" + q}>
-                      <button className="btn btn-warning">
-                        <EditIcon style={{ color: "white" }} />
-                      </button>
-                    </Link>
-                    <button
-                      className="btn btn-danger"
-                      onClick={() => del(q, user)}
-                      style={{ marginLeft: "8%" }}
-                    >
-                      <DeleteForeverIcon />
+    return (
+      <table className="table table-bordered table-hover">
+        <thead
+          className="thead-dark"
+          style={{ position: "sticky", top: "0", zIndex: "88888" }}
+        >
+          <tr>
+            <th scope="col" style={{ width: "5%" }}>
+              #
+            </th>
+            <th scope="col" style={{ width: "20%" }}>
+              Questions
+            </th>
+            <th scope="col" style={{ width: "55%" }}>
+              Answers
+            </th>
+            <th scope="col" style={{ width: "20%" }}>
+              Operations
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {finalIndex.map((q: any, key: number) => (
+            <tr key={key}>
+              <td>{key + 1}</td>
+              <td>
+                <>{handleQuestion(data, parseInt(q))}</>
+              </td>
+              <td>{handleAnswer(finalAnswer[key])}</td>
+              <td>
+                <div className="d-flex ">
+                  <Link to={"/update/" + q}>
+                    <button className="btn btn-warning">
+                      <EditIcon style={{ color: "white" }} />
                     </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      );
-    }
+                  </Link>
+                  <button
+                    className="btn btn-danger"
+                    onClick={() => del(q, user, id)}
+                    style={{ marginLeft: "8%" }}
+                  >
+                    <DeleteForeverIcon />
+                  </button>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
   }
+  // handles pagination
+  const handlePageClick = (data: any) => {
+    id = data.selected + 1;
+    sessionStorage.setItem("pageNumber", JSON.stringify(id));
+    // console.log("id =======" + id);
+    getData(user, id, 10);
+    document.documentElement.scrollTop = 0;
+  };
+
   var hostConfig = {
     hostCapabilities: {},
     choiceSetInputValueSeparator: ",",
@@ -272,7 +317,7 @@ function SearchQna() {
       actionsOrientation: "Vertical",
       actionAlignment: "Stretch",
     },
-    adaptiveCard: { allowCustomStyle: true },
+    adaptiveCard: { allowCustomStyle: false },
     imageSet: { maxImageHeight: 100 },
     media: { allowInlinePlayback: true },
     factSet: {
@@ -329,10 +374,13 @@ function SearchQna() {
       },
     },
   };
-
+  // handle answer
   function handleAnswer(answer: string) {
+    // try catch block to handle json parse error
     try {
+      // checks adaptive card
       if (answer.includes("AdaptiveCard")) {
+        // checks carousel
         if (answer.includes("/??/")) {
           const carousel = answer.split("/??/");
           return (
@@ -351,28 +399,29 @@ function SearchQna() {
           );
         } else {
           return (
-            <div>
-              <AdaptiveCard
-                payload={JSON.parse(answer)}
-                hostConfig={hostConfig}
-              />
-            </div>
+            <AdaptiveCard
+              payload={JSON.parse(answer)}
+              hostConfig={hostConfig}
+            />
           );
         }
       } else {
-        return <span>{answer}</span>;
+        return <h6 style={{ fontWeight: "bold" }}>{answer}</h6>;
       }
     } catch (error) {
       return <span>Wrong JSON</span>;
     }
   }
+  // handle question
   function handleQuestion(dat: any, indx: number) {
     let question: any = [];
-    dat.data.map((da: any, key: number) => {
+    //  filters the data on the basis of index
+    dat.result.map((da: any, key: number) => {
       let i = da.index;
       if (parseInt(i) === indx) {
         question.push(da.question);
       }
+      return <></>;
     });
     if (question.length === 1) {
       return question.map((data: any, key: number) => (
@@ -415,52 +464,108 @@ function SearchQna() {
     }
     // console.log(question);
   }
-  return (
-    <>
-      <Header />
-      <div className="container-fluid mt-5">
-        <div className="container">
-          <div className="d-flex justify-content-center">
-            <h1 className="text text-centre">Search</h1>
-          </div>
-          <div className="container">
-            <div className="d-flex justify-content-center">
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Enter question or keywords of the question you want to search"
-                style={{ width: "60%" }}
-                onChange={(event) => setSearchValue(event.target.value)}
-              />
-              <button
-                className="btn btn-primary"
-                onClick={() => searchQna(searchValue, user)}
-                style={{ marginLeft: "1%" }}
-              >
-                Search
-              </button>
+  function checkAdd() {
+    if (sessionStorage.getItem("add")) {
+      setOpen(true);
+      sessionStorage.removeItem("add");
+    }
+  }
+  function checkUpdate() {
+    if (sessionStorage.getItem("update")) {
+      setUpdateOpen(true);
+      sessionStorage.removeItem("update");
+    }
+  }
+  function checkDelete() {
+    if (sessionStorage.getItem("delete")) {
+      setErrorOpen(true);
+      sessionStorage.removeItem("delete");
+    }
+  }
+  useEffect(() => {
+    getData(user, id, 10);
+    checkAdd();
+    checkUpdate();
+    checkDelete();
+  }, [user, id]);
+  if (loading) {
+    return (
+      <>
+        <Header />
+        <h1>Loading</h1>
+      </>
+    );
+  } else {
+    return (
+      <>
+        <Header />
+        <div className="container-fluid" style={{ marginTop: "4.5%" }}>
+          <div style={{ marginTop: "" }}>
+            <div style={{ overflow: "auto", height: "38rem" }}>
+              {handleData(data)}
             </div>
           </div>
+          <div
+            className="d-flex justify-content-center"
+            style={{ marginTop: "0.5%" }}
+          >
+            <ReactPaginate
+              breakLabel="..."
+              nextLabel="->"
+              onPageChange={handlePageClick}
+              pageRangeDisplayed={10}
+              pageCount={totalPage}
+              previousLabel="<-"
+              containerClassName="pagination modal1"
+              pageClassName="page-item"
+              pageLinkClassName="page-link"
+              previousClassName="page-item"
+              previousLinkClassName="page-link"
+              nextClassName="page-item"
+              nextLinkClassName="page-link"
+              activeClassName="active"
+              initialPage={id - 1}
+            />
+          </div>
         </div>
-        <div className="mt-5" style={{ overflow: "auto", height: "700px" }}>
-          {loading ? <div></div> : handleData(data)}
-        </div>
-      </div>
-      <Snackbar
-        open={errorOpen}
-        autoHideDuration={6000}
-        onClose={handleErrorClose}
-      >
-        <Alert
-          onClose={handleErrorClose}
-          severity="error"
-          sx={{ width: "100%" }}
+        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+          <Alert
+            onClose={handleClose}
+            severity="success"
+            sx={{ width: "100%" }}
+          >
+            Added Sucessfully!!!
+          </Alert>
+        </Snackbar>
+        <Snackbar
+          open={updateOpen}
+          autoHideDuration={6000}
+          onClose={handleClose}
         >
-          Something Went Wrong!!!
-        </Alert>
-      </Snackbar>
-    </>
-  );
+          <Alert
+            onClose={handleUpdateClose}
+            severity="success"
+            sx={{ width: "100%" }}
+          >
+            Updated Sucessfully!!!
+          </Alert>
+        </Snackbar>
+        <Snackbar
+          open={errorOpen}
+          autoHideDuration={6000}
+          onClose={handleErrorClose}
+        >
+          <Alert
+            onClose={handleErrorClose}
+            severity="error"
+            sx={{ width: "100%" }}
+          >
+            Deleted Sucessfully!!!
+          </Alert>
+        </Snackbar>
+      </>
+    );
+  }
 }
 
-export default SearchQna;
+export default Dashboard;
