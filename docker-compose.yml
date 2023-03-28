@@ -117,27 +117,27 @@ services:
    server:
     restart: on-failure
     container_name: backend-data
-    build: ./QnA Editor React/backend
+    build: ./qna-editor/backend
     ports:
       - "8085:8085"
     networks:
       - test-network
     command: ["node", "index.js"]
     volumes:
-      - data1:/app/QnA Editor React/backend
+      - data1:/app/qna-editor/backend
     tty: true
      
    node:
     restart: on-failure
     container_name: frontend-data
-    build: ./QnA Editor React/frontend
+    build: ./qna-editor/frontend
     ports:
      - "8009:8009"
     networks:
      - test-network
     command: ["npm", "start"]
     volumes:
-       - data2:/app/QnA Editor React/frontend
+       - data2:/app/qna-editor/frontend
     tty: true
     
      
