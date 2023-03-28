@@ -1,0 +1,8 @@
+{
+  "short_name": "Nova Genie Ui Editor",
+  "name": "Editor to change the appearance of nova genie on web chat",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
