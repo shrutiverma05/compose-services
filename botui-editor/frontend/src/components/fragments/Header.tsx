@@ -62,7 +62,7 @@ export default function SwipeableTemporaryDrawer() {
               </IconButton>
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                 <img
-                  src={``${process.env.REACT_APP_LOCAL_URL}/assets/images/logo.png`}
+                  src={`${process.env.REACT_APP_LOCAL_URL}/assets/images/logo.png`}
                   alt="novacept logo"
                   width={200}
                 />

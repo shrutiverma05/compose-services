@@ -45,6 +45,7 @@ async function get(userID, pass, res) {
                 error = true;
             }
             botProp = JSON.parse(data);
+            console.log(botProp)
             password = botProp.generalSettings.botSecret.substring(0, 8);
             if (password === pass) {
                 error = false;
