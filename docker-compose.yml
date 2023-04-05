@@ -7,8 +7,8 @@ services:
       - '80:80'
     links:
       - elasticsearch
-      - haystack
-      - api
+      # - haystack
+      # - api
       - nlu
       - server
       # - streamlit
