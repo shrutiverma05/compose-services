@@ -38,7 +38,7 @@ app.add_middleware(
 @app.get("/query/{index_name}")
 async def query(q,index_name):
     document_store = (ElasticsearchDocumentStore(
-        host="uat.es.novacept.io",
+        host="https://uat.es.novacept.io/",
         username="",
         password="",
         index=index_name,

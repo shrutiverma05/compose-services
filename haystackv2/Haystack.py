@@ -63,7 +63,7 @@ app.add_middleware(
 @app.get("/train/{index_name}", status_code=202)
 async def index(index_name, background_tasks: BackgroundTasks):
     document_store = (ElasticsearchDocumentStore(
-        host="https://uat.es.novacept.io",
+        host="https://uat.es.novacept.io/",
         username="",
         password="",
         index=index_name,
