@@ -1,5 +1,6 @@
  FROM python:3.7-slim
  RUN python -m pip install rasa==3.1
+ RUN pip install websockets==10.0
 
  WORKDIR /app
  COPY . .
