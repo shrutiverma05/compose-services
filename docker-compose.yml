@@ -7,8 +7,8 @@ services:
       - '80:80'
     links:
       - elasticsearch
-      # - haystack
-      # - api
+      - haystack
+      - api
       - nlu
       - server
       # - streamlit
@@ -47,42 +47,42 @@ services:
     #     timeout: 1s
     #     retries: 10
     #     start_period: 45s 
-    #  volumes:
-    #   - esdata:/usr/share/elasticsearch/data
+     volumes:
+      - esdata:/usr/share/elasticsearch/data
 
-  #  haystack:
-  #    restart: on-failure
-  #    container_name: "haystack"
-  #    build: ./haystackv2
-  #    ports:
-  #      - 8001:8001
-  #    networks:
-  #      - test-network
-  #   #  environment:
-  #   #   # See rest_api/pipeline/pipelines.haystack-pipeline.yml for configurations of Search & Indexing Pipeline.
-  #   #    - ELASTICSEARCH_HOST=elasticsearch
-  #    env_file:
-  #     - .env.haystack
-  #    depends_on:
-  #     elasticsearch:
-  #       condition: service_healthy
+   haystack:
+     restart: on-failure
+     container_name: "haystack"
+     build: ./haystackv2
+     ports:
+       - 8001:8001
+     networks:
+       - test-network
+    #  environment:
+    #   # See rest_api/pipeline/pipelines.haystack-pipeline.yml for configurations of Search & Indexing Pipeline.
+    #    - ELASTICSEARCH_HOST=elasticsearch
+     env_file:
+      - .env.haystack
+     depends_on:
+      elasticsearch:
+        condition: service_healthy
      
-  #  api:
-  #    restart: on-failure
-  #    container_name: "haystack_api"
-  #    build: ./haystackv2/api
-  #    ports:
-  #      - 8000:8000
-  #    networks:
-  #      - test-network
-  #   #  environment:
-  #   #   # See rest_api/pipeline/pipelines.haystack-pipeline.yml for configurations of Search & Indexing Pipeline.
-  #   #    - ELASTICSEARCH_HOST=elasticsearch
-  #    env_file:
-  #     - .env.haystack
-  #    depends_on:
-  #     elasticsearch:
-  #        condition: service_healthy
+   api:
+     restart: on-failure
+     container_name: "haystack_api"
+     build: ./haystackv2/api
+     ports:
+       - 8000:8000
+     networks:
+       - test-network
+    #  environment:
+    #   # See rest_api/pipeline/pipelines.haystack-pipeline.yml for configurations of Search & Indexing Pipeline.
+    #    - ELASTICSEARCH_HOST=elasticsearch
+     env_file:
+      - .env.haystack
+     depends_on:
+      elasticsearch:
+         condition: service_healthy
         
    nlu:
     restart: on-failure

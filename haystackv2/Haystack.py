@@ -10,7 +10,7 @@ import requests
 import json
 
 data_file = 'faq_data.csv'
-host = os.environ.get("ELASTICSEARCH_HOST", "localhost")
+# host = os.environ.get("ELASTICSEARCH_HOST", "localhost")
 hostedserverUrl = "https://novacorpweb.azurewebsites.net/"
 
 def download(data_file,index_name):
@@ -63,7 +63,7 @@ app.add_middleware(
 @app.get("/train/{index_name}", status_code=202)
 async def index(index_name, background_tasks: BackgroundTasks):
     document_store = (ElasticsearchDocumentStore(
-        host=host,
+        host="uat.es.novacept.io",
         username="",
         password="",
         index=index_name,
