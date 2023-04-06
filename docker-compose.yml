@@ -41,12 +41,12 @@ services:
     #   - "ES_JAVA_OPTS=-Xms300m -Xmx1024m"
      env_file:
       - .env.elasticsearch
-    #  healthcheck:
-    #     test: curl --fail http://localhost:9200/_cat/health || exit 1
-    #     interval: 10s
-    #     timeout: 1s
-    #     retries: 10
-    #     start_period: 45s 
+     healthcheck:
+        test: curl --fail http://localhost:9200/_cat/health || exit 1
+        interval: 10s
+        timeout: 1s
+        retries: 10
+        start_period: 45s 
      volumes:
       - esdata:/usr/share/elasticsearch/data
 
