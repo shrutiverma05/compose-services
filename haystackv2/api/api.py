@@ -22,7 +22,7 @@ from fastapi.middleware.cors import CORSMiddleware
 # ftp_server.retrlines('LIST', lambda x: index_names.append(x.split()[-1]))
 # index_names = ['gts','propertyhub','valueleaf','recruitment','novacept','haytest']
 
-# host = os.environ.get("ELASTICSEARCH_HOST", "localhost")
+host = os.environ.get("ELASTICSEARCH_HOST", "localhost")
 app = FastAPI()
 
 origins = ["*"]
@@ -38,7 +38,7 @@ app.add_middleware(
 @app.get("/query/{index_name}")
 async def query(q,index_name):
     document_store = (ElasticsearchDocumentStore(
-        host="https://uat.es.novacept.io/",
+        host=host,
         username="",
         password="",
         index=index_name,
