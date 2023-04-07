@@ -375,6 +375,7 @@ app.post("/data", function (req, res) {
     if (userID) {
         const pth = `/temp/${userID}faq_data.csv`
         const csvFilePath = `.${pth}`
+        console.log(csvFilePath)
         convertCsvToJson(csvFilePath, startIndex, endIndex, res);
         if (error) {
             res.status(404).send(invalid)
