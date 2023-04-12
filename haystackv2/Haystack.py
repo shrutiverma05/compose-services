@@ -46,9 +46,17 @@ def train(data_file,index_name,retriever,document_store):
     df = df.rename(columns={"question": "content"})
 
     # Convert Dataframe to list of dicts and index them in our DocumentStore
+    batch_size = 100
+    num_docs = len(df)
+    num_batches = (num_docs // batch_size) + 1
+    for i in range(num_batches):
+        start_idx = i * batch_size
+        end_idx = min((i + 1) * batch_size, num_docs)
+        docs_to_index = df[start_idx:end_idx].to_dict(orient="records")
+        document_store.write_documents(docs_to_index)
 
-    docs_to_index = df.to_dict(orient="records")
-    document_store.write_documents(docs_to_index)
+    # docs_to_index = df.to_dict(orient="records")
+    # document_store.write_documents(docs_to_index)
 
 app = FastAPI()
 origins = ["*"]
